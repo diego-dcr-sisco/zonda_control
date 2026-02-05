@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\DashboardController;
-use App\HTTP\Controllers\UserController;
+use App\Http\Controllers\UserController;
 
 
 Route::get('/', function () {

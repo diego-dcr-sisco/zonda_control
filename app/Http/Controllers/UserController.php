@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use App\Models\Status;
 use App\Models\WorkDepartment;
@@ -192,7 +193,7 @@ class UserController extends Controller
 
 		} catch (\Exception $e) {
 			DB::rollBack();
-			\Log::error('Error al crear usuario: ' . $e->getMessage());
+			Log::error('Error al crear usuario: ' . $e->getMessage());
 			return back()->with('error', 'Error al crear el usuario: ' . $e->getMessage())->withInput();
 		}
 	}
