@@ -1,0 +1,36 @@
+<?php
+
+namespace PHPSTORM_META {
+    
+    // Para que Laravel Intellisense reconozca los seeders
+    override(\Illuminate\Database\Seeder::command, type(0));
+    
+    // Para modelos
+    override(\Illuminate\Database\Eloquent\Model::__get(0), map([
+        'id' => '@',
+        'created_at' => '@',
+        'updated_at' => '@',
+    ]));
+    
+    // Para comandos
+    override(\Illuminate\Console\Command::option(0), type(0));
+    override(\Illuminate\Console\Command::argument(0), type(0));
+    
+    expectedArguments(
+        \Illuminate\Database\Eloquent\Model::belongsTo(),
+        0,
+        argumentsSet('eloquentModels')
+    );
+    
+    expectedArguments(
+        \Illuminate\Database\Eloquent\Model::hasMany(),
+        0,
+        argumentsSet('eloquentModels')
+    );
+    
+    expectedArguments(
+        \Illuminate\Database\Eloquent\Model::belongsToMany(),
+        0,
+        argumentsSet('eloquentModels')
+    );
+}

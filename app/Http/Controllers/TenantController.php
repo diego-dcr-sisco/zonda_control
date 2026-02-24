@@ -512,76 +512,52 @@ class TenantController extends Controller
         return back()->with('success', 'Permiso actualizado correctamente');
     }
 
+    /**
+     * Sincroniza los permisos del tenant basándose en su plan
+     * 
+     * @param int $tenantId
+     * @return void
+     */
     public function restrictionPermissionsPlan($tenantId)
     {
-
-        $planPermissions = [
-            1 => [
-                'show_matrix',
-                'handle_planning',
-                'handle_crm',
-                'handle_tracking',
-                'handle_stock',
-                'handle_client_system'
-            ],
-            2 => [
-                'handle_crm',
-                'show_matrix',
-                'handle_planning',
-                'handle_tracking',
-                'handle_contracts',
-                'handle_stock',
-                'handle_rh',
-                'handle_client_system'
-            ],
-            3 => [
-                'handle_crm',
-                'show_matrix',
-                'show_sedes',
-                'handle_tracking',
-                'handle_quotes',
-                'handle_planning',
-                'handle_contracts',
-                'handle_control_points',
-                'handle_floorplans',
-                'handle_quality',
-                'handle_report_appearance',
-                'show_quality_analytics',
-                'handle_invoice',
-                'handle_client_system',
-                'handle_rh',
-                'handle_files_employees',
-                'handle_stock',
-                'handle_product_technical_details',
-                'assing_technician',
-                'generate_voucher_stock',
-                'show_stock_alerts',
-                'handle_customer_zones'
-            ]
-
-        ];
-
         $tenant = Tenant::find($tenantId);
-
-        $planId = $tenant->plan_id;
-
-        // obtener permisos de categoría 't' manejo segun el tipo de plan
-        $tenantPermissions = TenantPermissionControl::where('tenant_id', $tenant->id)
-            ->whereHas('permission', function ($query) {
-                $query->where('category', 't');
-            })
-            ->with('permission')
-            ->get();
-
-        foreach ($tenantPermissions as $tenantPermission) {
-            $permissionName = $tenantPermission->permission->name;
-            $isAllowed = in_array($permissionName, $planPermissions[$planId]) ? 1 : 0;
-
-            $tenantPermission->update([
-                'is_allowed' => $isAllowed,
-                'updated_at' => now()
-            ]);
+        
+        if (!$tenant) {
+            Log::warning("Tenant no encontrado al intentar sincronizar permisos: ID {$tenantId}");
+            return;
         }
+
+        if (!$tenant->plan_id) {
+            Log::warning("Tenant {$tenantId} no tiene plan asignado");
+            return;
+        }
+
+        // Obtener los permisos del plan desde plan_permissions
+        $planPermissions = DB::table('plan_permissions')
+            ->where('plan_id', $tenant->plan_id)
+            ->pluck('permission_id')
+            ->toArray();
+
+        // Obtener todos los permisos del sistema
+        $allPermissions = \Spatie\Permission\Models\Permission::all();
+
+        // Actualizar tenant_permission_control
+        foreach ($allPermissions as $permission) {
+            $isAllowed = in_array($permission->id, $planPermissions);
+            
+            TenantPermissionControl::updateOrCreate(
+                [
+                    'tenant_id' => $tenant->id,
+                    'permission_id' => $permission->id,
+                ],
+                [
+                    'is_allowed' => $isAllowed,
+                    'updated_at' => now()
+                ]
+            );
+        }
+
+        Log::info("Permisos sincronizados para tenant {$tenantId} desde plan {$tenant->plan_id}");
     }
 
     public function test()

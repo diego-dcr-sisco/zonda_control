@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
 class SuperAdminSeeder extends Seeder
 {
@@ -27,5 +28,27 @@ class SuperAdminSeeder extends Seeder
 
         // Asignar solo el rol
         $superAdmin->assignRole('AdministradorDireccion');
+
+        // Asignar todos los permisos de categoría tenant al super admin
+        $this->assignAllTenantPermissionsToSuperAdmin($superAdmin);
+    }
+
+    /**
+     * Asignar todos los permisos de tenant al super admin
+     */
+    private function assignAllTenantPermissionsToSuperAdmin(User $user): void
+    {
+        // Esperar a que los permisos existan (se crearán en TenantPermissionSeeder)
+        // Este método se puede llamar después si es necesario
+        try {
+            $permissions = Permission::where('category', 't')->get();
+            if ($permissions->isNotEmpty()) {
+                $user->givePermissionTo($permissions->pluck('name')->toArray());
+                $this->command->info("✓ Asignados {$permissions->count()} permisos al super admin");
+            }
+        } catch (\Exception $e) {
+            // Los permisos aún no existen, se asignarán después
+            $this->command->warn("⚠ Los permisos de tenant se asignarán en el siguiente seeder");
+        }
     }
 }

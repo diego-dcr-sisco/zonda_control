@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             SuperAdminSeeder::class,
             PlanSeeder::class,
             //TenantPermissionSeeder::class,
+            PlanPermissionMappingSeeder::class,
+            AssignPermissionsToSuperAdminSeeder::class,
         ]);
     }
 }
