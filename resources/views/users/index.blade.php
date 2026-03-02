@@ -14,6 +14,43 @@
                         USUARIOS DEL SISTEMA
                     </h4>
                 </div>
+                
+                <!-- Botón para crear nuevo usuario -->
+                <div class="dropdown">
+                    @if($branches->count() === 1)
+                        <!-- Si solo hay una sucursal, botón directo -->
+                        <a href="{{ route('subscriptions.branch.user.create', ['id' => $tenantId, 'branch' => $branches->first()->id]) }}" 
+                           class="btn btn-primary d-flex align-items-center gap-2" 
+                           style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Crear Usuario</span>
+                        </a>
+                    @else
+                        <!-- Si hay múltiples sucursales, dropdown -->
+                        <button class="btn btn-primary dropdown-toggle d-flex align-items-center gap-2" 
+                                type="button" 
+                                id="dropdownCreateUser" 
+                                data-bs-toggle="dropdown" 
+                                aria-expanded="false"
+                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Crear Usuario</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownCreateUser">
+                            <li><h6 class="dropdown-header">Seleccionar Sucursal</h6></li>
+                            <li><hr class="dropdown-divider"></li>
+                            @foreach($branches as $branch)
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" 
+                                       href="{{ route('subscriptions.branch.user.create', ['id' => $tenantId, 'branch' => $branch->id]) }}">
+                                        <i class="fas fa-building text-primary"></i>
+                                        <span>{{ $branch->name }}</span>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

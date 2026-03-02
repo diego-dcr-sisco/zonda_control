@@ -29,12 +29,12 @@
     }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-light  px-3 mb-0 p-1" style="background: linear-gradient(135deg, #ff6a00 0%, #ff8c00 50%, #ce8b10ff 100%); box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);">
+<nav class="navbar navbar-expand-lg navbar-light px-3 mb-0 p-1 bg-dark" >
     <div class="container-fluid">
         <!-- Logo del menú -->
-        <a href=" #"
+        <a href=""
             class="navbar-brand">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="img-fluid">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="img-fluid" style="width: 80px;">
         </a>
 
         <!-- Botón toggle para móviles -->

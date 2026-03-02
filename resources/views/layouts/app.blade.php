@@ -21,7 +21,7 @@
         @include('layouts.header')
         <div class="d-flex flex-column flex-md-row flex-grow-1" style="overflow: hidden;">
             <!-- Navbar primero en móvil, luego a la izquierda en desktop -->
-            <div class="order-md-1 col-sm-auto col-lg-1.5 p-0 shadow" style="background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);">
+            <div class="order-md-1 col-sm-auto col-md-3 col-lg-2 p-0 shadow bg-dark" style="overflow: hidden;">
                 @unless (request()->is('/dashboard/*'))
                     @include('layouts.navbar')
                 @endunless

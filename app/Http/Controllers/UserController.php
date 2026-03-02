@@ -45,6 +45,7 @@ class UserController extends Controller
 		$roles = SimpleRole::where('id', '!=', 4)->get();
 		$wk_depts = WorkDepartment::where('id', '!=', 1)->get();
 		$types = ['Usuario Interno', 'Cliente'];
+		$branches = Branch::where('tenant_id', $tenantId)->get();
 
 
 		return view(
@@ -54,7 +55,7 @@ class UserController extends Controller
 				'roles',
 				'wk_depts',
 				'tenantId',
-				
+				'branches'
 			)
 		);
 	}
